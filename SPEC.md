@@ -27,7 +27,12 @@ Results are from the **player’s perspective**. `determine_winner(player, compu
 
 ### Agreed plan
 
-Before implementation, predict one matchup and explain it with your local coding agent. Discuss a short plan and checks. Once it makes sense, ask the agent to replace this paragraph with the agreed plan, preserving the expected results above. Continue in the same chat.
+- **Prediction:** Player rock vs computer paper → `lose`, because paper covers rock. This matches the table above.
+- **Scope:** implement only `determine_winner(player, computer)` in `game.py`, returning `win`/`lose`/`tie` from the player's perspective. Keep the supplied `app.py`, template, and server. No scoring, storage, accounts, new framework, or AI API.
+- **Valid losing round (positive case):** player `rock`, computer `paper` → `lose`; the page shows both choices and "Computer wins".
+- **Rejected input (negative case):** a POST with move `lizard` (or no move) → HTTP 400 with "Choose Rock, Paper, or Scissors to play." The rule function is never called. This reuses the supplied tests in `tests/test_shell.py`.
+- **Tests:** nine literal unit cases plus one real request/result integration test in `tests/test_game.py`; one real browser round and replay in `tests/e2e/test_round.py`. Only the computer's random choice is fixed.
+- **Help received:** Claude (AI) helped draft the plan, implementation, and tests; I reviewed them, ran the checks, and played the game myself.
 
 ### Checks
 
@@ -44,7 +49,13 @@ Use `unit`, `integration`, and `e2e` pytest markers. Run `.venv/bin/python check
 
 ### Work record
 
-- Issue: add your own issue URL.
-- Pull request / CI: add actual URLs when they exist.
-- Implementation: **Not implemented.** The shell is supplied; `game.py` is unfinished.
-- Checks: **Rules not verified.** Supplied request/browser tests cover the shell only. After implementation, record actual full-check results and your browser observations here; put detailed results in the PR. Passing formatting and analysis alone is not evidence of correct rules.
+- Issue: https://github.com/GaretJax6905/my-rps-001/issues/1
+- Pull request: https://github.com/GaretJax6905/my-rps-001/pull/2
+- CI run: https://github.com/GaretJax6905/my-rps-001/actions/runs/41076400287
+- Implementation: [game.py](game.py) — `determine_winner` uses a `BEATS` table: equal moves tie, a move that beats the computer's wins, otherwise lose.
+- Tests: [tests/test_game.py](tests/test_game.py) (9 unit cases + real request/result integration), [tests/e2e/test_round.py](tests/e2e/test_round.py) (real Chromium round + replay). Missing/invalid input reuses the supplied HTTP 400 tests in [tests/test_shell.py](tests/test_shell.py).
+- Full local check (`.venv/bin/python check.py`, 2026-10-30): Black PASS, Pylint PASS, non-browser pytest PASS (23 passed), Chromium E2E PASS (6 passed). First run failed Black/Pylint for missing final newlines; fixed with `black *.py tests`, then all checks passed.
+- Test explained: the unit case `("rock", "paper", "lose")` asserts that rock vs paper returns `lose`. It would catch a flipped perspective (returning the computer's result, `win`) or a backwards BEATS table.
+- Played round: I chose Rock, the computer chose Paper, and the page showed "Computer wins". That is correct because paper covers rock, and it matches my prediction.
+- Other rounds tried: Paper vs Rock → You win!; Scissors vs Scissors → It's a tie; Rock vs Scissors → You win!; Paper vs Scissors → Computer wins. All match the expected results table.
+- Replay/keyboard: each click started a new independent round with new choices and no score. Tab moved focus between the Rock, Paper, and Scissors buttons, and Enter played a round.
