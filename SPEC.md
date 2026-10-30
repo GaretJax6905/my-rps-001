@@ -50,8 +50,8 @@ Use `unit`, `integration`, and `e2e` pytest markers. Run `.venv/bin/python check
 ### Work record
 
 - Issue: https://github.com/GaretJax6905/my-rps-001/issues/1
-- Pull request: <add after opening PR>
-- CI run: <add after PR checks run>
+- Pull request: https://github.com/GaretJax6905/my-rps-001/pull/2
+- CI run: https://github.com/GaretJax6905/my-rps-001/actions/runs/41076400287
 - Implementation: [game.py](game.py) — `determine_winner` uses a `BEATS` table: equal moves tie, a move that beats the computer's wins, otherwise lose.
 - Tests: [tests/test_game.py](tests/test_game.py) (9 unit cases + real request/result integration), [tests/e2e/test_round.py](tests/e2e/test_round.py) (real Chromium round + replay). Missing/invalid input reuses the supplied HTTP 400 tests in [tests/test_shell.py](tests/test_shell.py).
 - Full local check (`.venv/bin/python check.py`, 2026-10-30): Black PASS, Pylint PASS, non-browser pytest PASS (23 passed), Chromium E2E PASS (6 passed). First run failed Black/Pylint for missing final newlines; fixed with `black *.py tests`, then all checks passed.
